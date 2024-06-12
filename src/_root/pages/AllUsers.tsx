@@ -1,10 +1,10 @@
-import React from 'react';
-//import { useGetUsers } from '@/lib/react-query/queriesAndMutations';
-import { useUserContext } from '@/context/AuthContext';
+// import React from 'react';
+// //import { useGetUsers } from '@/lib/react-query/queriesAndMutations';
+// import { useUserContext } from '@/context/AuthContext';
 
 const AllUsers: React.FC = () => {
   //const { data: users, isLoading, isError } = useGetUsers();
-  const {user}= useUserContext();
+  // const {user}= useUserContext();
   // if (isLoading) return <Loader />;
   // if (isError) return <div>Error loading users</div>;
 
