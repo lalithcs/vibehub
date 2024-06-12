@@ -13,7 +13,9 @@ const Explore = () => {
   const {ref, inView} =useInView();
   const [searchValue, setSearchValue] = useState('')
   const debouncedValue = useDebounce(searchValue, 500);
-  const {data: searchedPosts, isFetching: isSearchFetching }=useSearchPosts(debouncedValue)
+  const {data, isFetching: isSearchFetching }=useSearchPosts(debouncedValue);
+  const searchedPosts = data?.documents;
+
   useEffect(() => {
     if(inView && !searchValue){
       fetchNextPage();
@@ -69,7 +71,7 @@ const Explore = () => {
         {shouldShowSearchResults? (
           <SearchResults 
             isSearchFetching={isSearchFetching}
-            searchedPosts={searchedPosts ?? []} // Add nullish coalescing operator
+            searchedPosts={searchedPosts} // Add nullish coalescing operator
           
           />
         ): shouldShowPosts ?(
