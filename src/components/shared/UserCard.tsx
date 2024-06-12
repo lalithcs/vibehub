@@ -1,5 +1,5 @@
 import { useUserContext } from '@/context/AuthContext'
-import React from 'react'
+
 import { Link } from 'react-router-dom'
 
 const UserCard = () => {

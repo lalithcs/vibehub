@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -17,7 +17,7 @@ import FileUploader from '../shared/FileUploader'
 import { PostValidation } from '@/lib/validation'
 import { Models } from 'appwrite'
 import {useUserContext } from '@/context/AuthContext'
-import { useCreatePost, useCreateUserAccount, useUpdatePost } from '@/lib/react-query/queriesAndMutations'
+import { useCreatePost, useUpdatePost } from '@/lib/react-query/queriesAndMutations'
 import { toast } from '../ui/use-toast'
 import { useNavigate } from 'react-router-dom'
 

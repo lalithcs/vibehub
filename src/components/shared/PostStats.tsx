@@ -1,5 +1,4 @@
-import { useUserContext } from "@/context/AuthContext";
-import { likePost } from "@/lib/appwrite/api";
+
 import { useDeleteSavedPost, useGetCurrentUser, useLikePost, useSavePost } from "@/lib/react-query/queriesAndMutations";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";

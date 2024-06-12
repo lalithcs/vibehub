@@ -1,8 +1,7 @@
 import { INewUser, IUpdatePost } from "@/types";
-import { Client, ID, ImageGravity, Query } from 'appwrite'
+import { ID, ImageGravity, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { INewPost } from "@/types";
-import { useRouteId } from "react-router/dist/lib/hooks";
 
 export async function createUserAccount(user: INewUser){
     try {

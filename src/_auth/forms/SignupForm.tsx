@@ -12,13 +12,12 @@ import { Input } from "@/components/ui/input"
 import { SignupValidation } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
 import { Link, useNavigate } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
 import { useUserContext } from "@/context/AuthContext"
 
 const SignupForm = () => {
   const { toast } = useToast();
-  const {checkAuthUser, isPending: isUserLoading}  = useUserContext(); 
+  const {checkAuthUser, isPending}  = useUserContext(); 
   const navigate = useNavigate();
 
   const {mutateAsync : createUserAccount, isPending: isCreatingUser} = useCreateUserAccount();

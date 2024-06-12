@@ -69,7 +69,7 @@ const Explore = () => {
         {shouldShowSearchResults? (
           <SearchResults 
             isSearchFetching={isSearchFetching}
-            searchedPosts={searchedPosts}
+            searchedPosts={searchedPosts ?? []} // Add nullish coalescing operator
           
           />
         ): shouldShowPosts ?(

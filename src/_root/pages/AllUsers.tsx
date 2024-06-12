@@ -1,8 +1,5 @@
 import React from 'react';
 //import { useGetUsers } from '@/lib/react-query/queriesAndMutations';
-
-import Loader from '@/components/shared/Loader';
-import UserCard from '@/components/shared/UserCard';
 import { useUserContext } from '@/context/AuthContext';
 
 const AllUsers: React.FC = () => {
