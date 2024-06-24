@@ -1,8 +1,13 @@
-import GridUsersList from "@/components/shared/GridUsersList";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useLocation } from "react-router-dom";
 import { useGetTopCreators } from "@/lib/react-query/queriesAndMutations";
+import { Models } from "appwrite";
+import { Skeleton } from "../ui/skeleton";
+import TopCreators from "./TopCreators";
 
-const AllUsers = () => {
+const RightSidebar = () => {
+  const { pathname } = useLocation();
+  if (pathname !== "/") return null;
+
   const { data: creators, isPending: isCreatorsLoading } = useGetTopCreators();
 
   if (isCreatorsLoading) {
@@ -20,14 +25,17 @@ const AllUsers = () => {
       </div>
     );
   }
+
   return (
-    <div className="users-container w-full pl-10">
-      <div className="users-inner_container">
-        <h2 className="h3-bold md:h2-bold w-full pt-10 pb-5">All Users</h2>
-        <GridUsersList creators={creators} />
+    <nav className="rightsidebar custom-scrollbar">
+      <h2 className="h3-bold md:h2-bold w-full mb-10">Top Creators</h2>
+      <div className="grid xl:grid-cols-2 lg:grid-cols-1 gap-4">
+        {creators?.documents.map((creator: Models.Document) => (
+          <TopCreators key={creator.$id} creator={creator} />
+        ))}
       </div>
-    </div>
+    </nav>
   );
 };
 
-export default AllUsers;
+export default RightSidebar;
