@@ -127,7 +127,7 @@ export async function createPost(post: INewPost) {
                 
             }
         )
-        console.log(post.userId);
+        
 
         if(!newPost){
             await deleteFile(uploadedFile.$id);
