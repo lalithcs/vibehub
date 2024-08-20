@@ -3,12 +3,10 @@ import {
     useMutation,
     useQueryClient,
     useInfiniteQuery,
-    UseQueryOptions,
 } from '@tanstack/react-query'
 import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getTopCreators, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost } from '../appwrite/api'
 import { INewPost, INewUser, IUpdatePost } from '@/types'
 import { QUERY_KEYS } from './queryKeys';
-import {  UseMutationResult } from '@tanstack/react-query';
 import { fetchPlacementStatistics } from '../appwrite/api.ts';
 
 

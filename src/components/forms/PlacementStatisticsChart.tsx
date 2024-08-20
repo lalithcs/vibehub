@@ -1,7 +1,7 @@
 // src/components/PlacementStatisticsChart.tsx
 import React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, Legend } from 'recharts';
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer, ChartLegendContent, ChartTooltipContent } from '@/components/ui/chart';
 
 interface ChartData {
   year: string;
