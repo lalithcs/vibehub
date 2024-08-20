@@ -382,3 +382,22 @@ export async function getTopCreators() {
     if (!posts) throw Error;
     return posts;
   }
+// api.ts
+import { PlacementStatistics } from '../react-query/types.ts';
+
+export const fetchPlacementStatistics = async (): Promise<PlacementStatistics> => {
+//   const response = await axios.get<PlacementStatistics>('/api/placement-statistics'); // Replace with your API endpoint
+//   return response.data;
+    const staticData: PlacementStatistics = {
+        totalStudents: 1000,
+        placedStudents: 800,
+        unplacedStudents: 200,
+        highestPackage: 1000000,
+        lowestPackage: 300000,
+        averagePackage: 500000,
+        companyVisits: 100,
+        offersMade: 1000,
+    };
+    return staticData;
+    };
+

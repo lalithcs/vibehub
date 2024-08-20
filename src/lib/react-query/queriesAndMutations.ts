@@ -3,10 +3,13 @@ import {
     useMutation,
     useQueryClient,
     useInfiniteQuery,
+    UseQueryOptions,
 } from '@tanstack/react-query'
 import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getTopCreators, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost } from '../appwrite/api'
 import { INewPost, INewUser, IUpdatePost } from '@/types'
 import { QUERY_KEYS } from './queryKeys';
+import {  UseMutationResult } from '@tanstack/react-query';
+import { fetchPlacementStatistics } from '../appwrite/api.ts';
 
 
 export const useCreateUserAccount = () => {
@@ -180,5 +183,32 @@ export const useGetTopCreators = () => {
     return useQuery({
       queryKey: [QUERY_KEYS.GET_USERS],
       queryFn: getTopCreators,
+    });
+  };
+  interface PlacementStatistics {
+    totalStudents: number;
+    placedStudents: number;
+    unplacedStudents: number;
+    highestPackage: number;
+    lowestPackage: number;
+    averagePackage: number;
+    companyVisits: number;
+    offersMade: number;
+  }
+  // queriesAndMutations.ts
+  export const useGetPlacementStatistics = () => {
+    return useQuery<PlacementStatistics, Error>({
+      queryKey: [QUERY_KEYS.GET_PLACEMENT_STATISTICS],
+      queryFn: fetchPlacementStatistics,
+      initialData: {
+        totalStudents: 100,
+        placedStudents: 80,
+        unplacedStudents: 20,
+        highestPackage: 2000000,
+        lowestPackage: 500000,
+        averagePackage: 1000000,
+        companyVisits: 50,
+        offersMade: 80
+      },
     });
   };

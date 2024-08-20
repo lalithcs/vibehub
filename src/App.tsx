@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Saved, UpdateProfile } from './_root/pages';
 import './globals.css'
 import {Routes, Route} from 'react-router-dom';
+import PlacementDashboard from './_root/pages/PlacementDashboard';
 const App = () => {
   return (
     <main className="flex h-screen">
@@ -28,6 +29,7 @@ const App = () => {
                 <Route path="/posts/:id" element={<PostDetails />} />
                 <Route path="/profile/:id/*" element={<Profile />} />
                 <Route path="/update-profile/:id" element={<UpdateProfile />} />
+                <Route path="/placement-dashboard" element={<PlacementDashboard />} />
             </Route>
         </Routes>
 
