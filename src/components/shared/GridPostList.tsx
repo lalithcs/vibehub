@@ -60,19 +60,19 @@
 // }
 
 // export default GridPostList
-import { useUserContext } from '@/context/AuthContext';
+// import { useUserContext } from '@/context/AuthContext';
 import { Models } from 'appwrite';
 import { Link } from 'react-router-dom';
-import PostStats from './PostStats';
+// import PostStats from './PostStats';
 
 type GridPostListProps = {
   posts: Models.Document[];
   showUser?: boolean;
   showStats?: boolean;
 };
-
-const GridPostList = ({ posts, showUser = true, showStats = true }: GridPostListProps) => {
-  const { user } = useUserContext();
+// showStats = true
+const GridPostList = ({ posts, showUser = true,  }: GridPostListProps) => {
+  //const { user } = useUserContext();
 
   return (
     <ul className="grid-container">
