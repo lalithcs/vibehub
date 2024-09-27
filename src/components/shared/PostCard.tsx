@@ -3,7 +3,6 @@ import { formatDate } from '@/lib/utils';
 import { Models } from 'appwrite';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
-import parse from 'html-react-parser';
 type PostCardProps = {
     post:Models.Document;
     
