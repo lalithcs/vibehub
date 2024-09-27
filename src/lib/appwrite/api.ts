@@ -3,33 +3,33 @@ import { ID, ImageGravity, Query } from 'appwrite'
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { INewPost } from "@/types";
 
-export async function createUserAccount(user: INewUser){
-    try {
-       const newAccount = await account.create(
-        ID.unique(),
-        user.email,
-        user.password,
-        user.name
-       ) ;
+// export async function createUserAccount(user: INewUser){
+//     try {
+//        const newAccount = await account.create(
+//         ID.unique(),
+//         user.email,
+//         user.password,
+//         user.name
+//        ) ;
 
-       if(!newAccount) throw Error;
+//        if(!newAccount) throw Error;
 
-       const avatarUrl=avatars.getInitials(user.name);
+//        const avatarUrl=avatars.getInitials(user.name);
 
-       const newUser = await saveUserToDB({
-        accountId: newAccount.$id,
-        name:newAccount.name,
-        email: newAccount.email,
-        username: user.username,
-        imageUrl: avatarUrl,
-       });
+//        const newUser = await saveUserToDB({
+//         accountId: newAccount.$id,
+//         name:newAccount.name,
+//         email: newAccount.email,
+//         username: user.username,
+//         imageUrl: avatarUrl,
+//        });
 
-       return newUser;
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
-}
+//        return newUser;
+//     } catch (error) {
+//         console.log(error);
+//         return error;
+//     }
+// }
 
 export async function saveUserToDB(user : {
     accountId: string,
@@ -52,15 +52,77 @@ export async function saveUserToDB(user : {
     }
 }
 
-export async function signInAccount(user: {
-    email: string,
-    password: string,
-}) {
+// export async function signInAccount(user: {
+//     email: string,
+//     password: string,
+// }) {
+//     try {
+//         const session = await account.createEmailPasswordSession(user.email, user.password);
+//         return session;
+//     } catch (error) {
+//         console.log(error);
+//         return error;
+//     }
+// }
+// Function to check if the user is logged in
+export async function isUserLoggedIn() {
+    try {
+        const currentAccount = await account.get();
+        return !!currentAccount; // Returns true if user is logged in
+    } catch (error) {
+        console.log("User is not logged in:", error);
+        return false; // User is not logged in
+    }
+}
+
+// Example usage of isUserLoggedIn before creating an account
+export async function createUserAccount(user: INewUser) {
+    const loggedIn = await isUserLoggedIn();
+    if (loggedIn) {
+        console.log("User is already logged in. Please log out first.");
+        return null;
+    }
+
+    try {
+        const newAccount = await account.create(
+            ID.unique(),
+            user.email,
+            user.password,
+            user.name
+        );
+
+        if (!newAccount) throw new Error("Account creation failed");
+
+        const avatarUrl = avatars.getInitials(user.name);
+
+        const newUser = await saveUserToDB({
+            accountId: newAccount.$id,
+            name: newAccount.name,
+            email: newAccount.email,
+            username: user.username,
+            imageUrl: avatarUrl,
+        });
+
+        return newUser;
+    } catch (error) {
+        console.log("Error creating account:", error);
+        return error;
+    }
+}
+
+// Similarly, update the signInAccount function to check if the user is logged in
+export async function signInAccount(user: { email: string, password: string }) {
+    const loggedIn = await isUserLoggedIn();
+    if (loggedIn) {
+        console.log("User is already logged in.");
+        return null;
+    }
+
     try {
         const session = await account.createEmailPasswordSession(user.email, user.password);
         return session;
     } catch (error) {
-        console.log(error);
+        console.log("Error signing in:", error);
         return error;
     }
 }

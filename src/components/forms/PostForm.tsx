@@ -18,7 +18,8 @@ import { Models } from 'appwrite'
 import {useUserContext } from '@/context/AuthContext'
 import { useCreatePost, useUpdatePost } from '@/lib/react-query/queriesAndMutations'
 import { toast } from '../ui/use-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
 
 type PostFormProps = {
   post?: Models.Document;
@@ -47,7 +48,6 @@ const PostForm = ( {post, action} : PostFormProps ) => {
   //const id=user.user?.id;
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PostValidation>) {
-
     if(post && action === 'update'){
       const updatedPost= await updatePost({
         ...values,

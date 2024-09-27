@@ -3,14 +3,35 @@ import { formatDate } from '@/lib/utils';
 import { Models } from 'appwrite';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
-
+import parse from 'html-react-parser';
 type PostCardProps = {
     post:Models.Document;
+    
 };
 
 const PostCard = ({ post }: PostCardProps) => {
     const { user } = useUserContext();
     if(!post.creator) return;
+    const parseCaption = (caption: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+        return caption.split(urlRegex).map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={index}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part; // Return the non-URL part as plain text
+        });
+    };
   return (
     <div className="post-card">
         <div className="flex-between">
@@ -48,9 +69,9 @@ const PostCard = ({ post }: PostCardProps) => {
                 />
             </Link>
         </div>
-        <Link to={`/posts/${post.$id}`}>
+        
             <div className="small-medium lg:base-medium py-5">
-                <p>{post.caption}</p>
+                <p style={{ whiteSpace: 'pre-wrap' }}>{parseCaption(post.caption)}</p>
                 <ul className="flex gap-1 mt-2">
                     {post.tags.map((tag: string) => (
                         <li key={tag} className="text-light-3">
@@ -59,7 +80,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     ))}
                 </ul>
             </div>
-
+            <Link to={`/posts/${post.$id}`}>
             <img 
             src={post.imageUrl || '/assets/icons/profile-placeholder.svg'}
             className="post-car_img"
