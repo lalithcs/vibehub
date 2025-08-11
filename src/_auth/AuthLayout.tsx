@@ -31,11 +31,11 @@ const AuthLayout = () => {
               <div className="text-center max-w-sm">
                 <img 
                   src="/assets/images/logo t5.png"
-                  alt="VibeHub"
+                  alt="Career Quest"
                   className="w-20 h-20 mx-auto mb-6"
                 />
                 <h2 className="text-3xl font-bold mb-4">
-                  Welcome to <span className="text-yellow-300">VibeHub</span>
+                  Welcome to <span className="text-yellow-300">Career Quest</span>
                 </h2>
                 <p className="text-lg opacity-90 mb-6">
                   Connect with professionals and build your career network.
