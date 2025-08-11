@@ -8,15 +8,26 @@ import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Sa
 import './globals.css'
 import {Routes, Route, Navigate} from 'react-router-dom';
 import PlacementDashboard from './_root/pages/PlacementDashboard';
+import { useUserContext } from './context/AuthContext';
 
 const App = () => {
   // Check if user has already agreed to disclaimer
   const hasAgreedToDisclaimer = localStorage.getItem("disclaimerAgreed") === "true";
+  const { isAuthenticated, isPending } = useUserContext();
+
+  // Show loading while checking authentication
+  if (isPending) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-dark-1">
+        <div className="text-light-1">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <main className="flex h-screen">
         <Routes>
-            {/* Disclaimer route - first page */}
+            {/* Disclaimer route - first page for new users */}
             <Route path="/disclaimer" element={<Disclaimer />} />
             
             {/* public routes */}
@@ -29,43 +40,103 @@ const App = () => {
             <Route element={<RootLayout />} >
                 <Route 
                   path="/" 
-                  element={hasAgreedToDisclaimer ? <Home /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Home /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/explore" 
-                  element={hasAgreedToDisclaimer ? <Explore /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Explore /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/saved" 
-                  element={hasAgreedToDisclaimer ? <Saved /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Saved /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/all-users" 
-                  element={hasAgreedToDisclaimer ? <AllUsers /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <AllUsers /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/create-post" 
-                  element={hasAgreedToDisclaimer ? <CreatePost /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <CreatePost /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/update-post/:id" 
-                  element={hasAgreedToDisclaimer ? <EditPost /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <EditPost /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/posts/:id" 
-                  element={hasAgreedToDisclaimer ? <PostDetails /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <PostDetails /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/profile/:id/*" 
-                  element={hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/update-profile/:id" 
-                  element={hasAgreedToDisclaimer ? <UpdateProfile /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <UpdateProfile /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
                 <Route 
                   path="/placement-dashboard" 
-                  element={hasAgreedToDisclaimer ? <PlacementDashboard /> : <Navigate to="/disclaimer" replace />} 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <PlacementDashboard /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
                 />
             </Route>
         </Routes>

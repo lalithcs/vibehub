@@ -40,7 +40,10 @@ const Disclaimer = () => {
     navigate("/")
   }
 
-  const handleFeedbackSubmit = (values: any) => {
+  const handleFeedbackSubmit = (values: { name: string; email: string; feedback: string }) => {
+    // Log feedback data (you can send this to your backend)
+    console.log("Feedback submitted:", values)
+    
     toast({
       title: "Feedback submitted",
       description: "Thank you for your feedback!",

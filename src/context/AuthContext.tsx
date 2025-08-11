@@ -2,6 +2,7 @@ import { getCurrentUser } from '@/lib/appwrite/api';
 import { IContextType, IUser } from '@/types';
 import {createContext, useContext, useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+
 export const INITIAL_USER = {
     id: "",
     name: '',
@@ -18,8 +19,8 @@ const INITIAL_STATE = {
     isPending: false,
     setUser: () => {},
     setIsAuthenticated: () => {},
-    checkAuthUser: async () => false as boolean, 
-
+    checkAuthUser: async () => false as boolean,
+    logoutUser: () => {},
 }
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -31,7 +32,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     
     const navigate = useNavigate();
 
+    const logoutUser = () => {
+        setUser(INITIAL_USER);
+        setIsAuthenticated(false);
+        localStorage.removeItem('cookieFallback');
+        navigate('/sign-in');
+    };
+
     const checkAuthUser = async () => {
+        setisPending(true);
         try {
             const currentAccount = await getCurrentUser();
 
@@ -46,30 +55,57 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 })
 
                 setIsAuthenticated(true);
-
                 return true;
             }
 
+            // If no current account, logout user
+            logoutUser();
             return false;
         } catch (error) {
-            console.log(error);
+            console.log("Auth check failed:", error);
+            // Session expired or invalid, logout user
+            logoutUser();
             return false;
         } finally{
             setisPending(false);
         }
     };
 
+    // Check authentication status periodically
     useEffect(() => {
-        if(
-            localStorage.getItem('cookieFallback') === '[]' ||
-            localStorage.getItem('cookieFallback') === null
-        ) navigate('/sign-in')
+        const interval = setInterval(() => {
+            if (isAuthenticated) {
+                checkAuthUser();
+            }
+        }, 5 * 60 * 1000); // Check every 5 minutes
 
-        checkAuthUser();
+        return () => clearInterval(interval);
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        const cookieFallback = localStorage.getItem('cookieFallback');
+        
+        if(
+            cookieFallback === '[]' ||
+            cookieFallback === null ||
+            cookieFallback === undefined
+        ) {
+            navigate('/sign-in');
+        } else {
+            checkAuthUser();
+        }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, isAuthenticated, setIsAuthenticated, isPending, checkAuthUser }}>
+        <AuthContext.Provider value={{ 
+            user, 
+            setUser, 
+            isAuthenticated, 
+            setIsAuthenticated, 
+            isPending, 
+            checkAuthUser, 
+            logoutUser 
+        }}>
             {children}
         </AuthContext.Provider>
     );

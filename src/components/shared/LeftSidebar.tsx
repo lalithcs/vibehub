@@ -8,14 +8,28 @@ import { sidebarLinks } from '@/constants'
 
 const LeftSidebar = () => {
   const { pathname } = useLocation();
-  const { mutate: signOut, isSuccess } = useSignOutAccount();
-  const navigate= useNavigate();
-  const { user } = useUserContext();
+  const { mutate: signOut, isSuccess, isPending: isSigningOut } = useSignOutAccount();
+  const navigate = useNavigate();
+  const { user, logoutUser } = useUserContext();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Call logoutUser to clean up local state immediately
+      logoutUser();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      // Even if API call fails, clean up local state
+      logoutUser();
+    }
+  };
+
   useEffect(() => {
     if (isSuccess) {
-      navigate(0);
+      // Navigate to sign-in after successful logout
+      navigate('/sign-in', { replace: true });
     }
-  }, [isSuccess])
+  }, [isSuccess, navigate])
 
   return (
     <nav className="leftsidebar">
@@ -28,7 +42,7 @@ const LeftSidebar = () => {
             height={36}
             />
         </Link>
-        <Link to={'/profile/${user.id'} className='flex gap-3 items-center'>
+        <Link to={`/profile/${user.id}`} className='flex gap-3 items-center'>
           <img
           src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
           alt="profile"
@@ -63,14 +77,20 @@ const LeftSidebar = () => {
         </ul>
 
       </div>
-      <Button variant="ghost" className="shad-button_ghost" onClick={() => signOut()}>
-      <img
-        src="/assets/icons/logout.svg"
-        alt="logout"/>
-        <p className="small-medium lg-base-medium">Logout</p>
+      <Button 
+        variant="ghost" 
+        className="shad-button_ghost" 
+        onClick={handleSignOut}
+        disabled={isSigningOut}
+      >
+        <img
+          src="/assets/icons/logout.svg"
+          alt="logout"
+        />
+        <p className="small-medium lg-base-medium">
+          {isSigningOut ? 'Signing out...' : 'Logout'}
+        </p>
       </Button>
-
-      
     </nav>
   )
 }
