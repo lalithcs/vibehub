@@ -80,6 +80,7 @@ export async function createUserAccount(user: INewUser) {
     const loggedIn = await isUserLoggedIn();
     if (loggedIn) {
         console.log("User is already logged in. Please log out first.");
+        signOutAccount();
         return null;
     }
 
