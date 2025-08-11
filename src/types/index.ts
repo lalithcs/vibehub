@@ -18,15 +18,11 @@ export type INavLink = {
     userId: string;
     name: string;
     bio: string;
-    imageId: string;
-    imageUrl: URL | string;
-    file: File[];
   };
   
   export type INewPost = {
     userId: string;
     caption: string;
-    file: File[];
     location?: string;
     tags?: string;
   };
@@ -34,9 +30,6 @@ export type INavLink = {
   export type IUpdatePost = {
     postId: string;
     caption: string;
-    imageId: string;
-    imageUrl: URL;
-    file: File[];
     location?: string;
     tags?: string;
   };
@@ -46,7 +39,6 @@ export type INavLink = {
     name: string;
     username: string;
     email: string;
-    imageUrl: string;
     bio: string;
   };
   

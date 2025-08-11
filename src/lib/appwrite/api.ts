@@ -1,7 +1,6 @@
-import { INewUser, IUpdatePost } from "@/types";
-import { ID, ImageGravity, Query } from 'appwrite'
-import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { INewPost } from "@/types";
+import { INewUser, IUpdatePost, INewPost } from "@/types";
+import { ID, Query } from 'appwrite'
+import { account, appwriteConfig, avatars, databases } from "./config";
 
 // export async function createUserAccount(user: INewUser){
 //     try {
@@ -161,18 +160,6 @@ export async function signOutAccount() {
 
 export async function createPost(post: INewPost) {
     try {
-        //Upload image to storage
-        const uploadedFile = await uploadFile(post.file[0]);
-
-        if(!uploadedFile) throw Error;
-
-        const fileUrl = getFilePreview(uploadedFile.$id);
-
-        if(!fileUrl){ 
-            deleteFile(uploadedFile.$id);
-            throw Error;
-        }
-
         //Convert tags to array
         const tags = post.tags?.replace(/ /g,'').split(',') || [];
         //Save post to database
@@ -184,16 +171,11 @@ export async function createPost(post: INewPost) {
                 caption: post.caption,
                 location: post.location,
                 tags: tags,
-                imageUrl: fileUrl,
-                imageId: uploadedFile.$id,
                 creator: post.userId,
-                
             }
         )
         
-
         if(!newPost){
-            await deleteFile(uploadedFile.$id);
             throw Error;
         }
         return newPost;
@@ -202,47 +184,6 @@ export async function createPost(post: INewPost) {
         return error;   
     }
 }
-
-export async function uploadFile(file: File) {
-    try {
-        const uploadedFile = await storage.createFile(
-        appwriteConfig.storageId,
-        ID.unique(),
-        file,
-    );
-
-    return uploadedFile;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export function getFilePreview(fileId: string) {
-    try {
-        const fileUrl = storage.getFilePreview(
-            appwriteConfig.storageId,
-            fileId,
-            2000,
-            2000,
-            ImageGravity.Top,
-            100,
-        );
-
-        return fileUrl;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export async function deleteFile(fileId: string) {
-    try {
-        await storage.deleteFile(appwriteConfig.storageId, fileId);
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
 
 export async function getRecentPosts() {
     try {
@@ -325,30 +266,7 @@ export async function getPostById(postId?: string) {
 }
 
 export async function updatePost(post: IUpdatePost) {
-    const hasFileToUpdate = post.file.length > 0;
-    
     try {
-        //Upload image to storage
-        
-        
-        let image={
-            imageUrl: post.imageUrl,
-            imageId: post.imageId,
-        }
-        if(hasFileToUpdate){
-            const uploadedFile = await uploadFile(post.file[0]);
-            if(!uploadedFile) throw Error;
-
-        const fileUrl = getFilePreview(uploadedFile.$id);
-
-        if(!fileUrl){ 
-            deleteFile(uploadedFile.$id);
-            throw Error;
-        }
-        image={...image, imageUrl: fileUrl, imageId: uploadedFile.$id};
-
-    }
-
         //Convert tags to array
         const tags = post.tags?.replace(/ /g,'').split(',') || [];
         //Save post to database
@@ -360,13 +278,10 @@ export async function updatePost(post: IUpdatePost) {
                 caption: post.caption,
                 location: post.location,
                 tags: tags,
-                imageUrl: image.imageUrl,
-                imageId: image.imageId,
             }
         )
 
         if(!updatedPost){
-            await deleteFile(post.imageId);
             throw Error;
         }
         return updatedPost;
@@ -377,14 +292,16 @@ export async function updatePost(post: IUpdatePost) {
 }
 
 
-export async function deletePost(postId: string, imageId:string) {
-    if(!postId || !imageId) throw Error;
+export async function deletePost(postId: string) {
+    if(!postId) throw Error;
     try {
-        await databases.deleteDocument(
+        const statusCode = await databases.deleteDocument(
             appwriteConfig.databaseId,
             appwriteConfig.collectionId,
             postId
         );
+        
+        if(!statusCode) throw Error;
         
         return {status: 'ok'};
     } catch (error) {

@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input" 
 import { Textarea } from '../ui/textarea'
-import FileUploader from '../shared/FileUploader'
 import { PostValidation } from '@/lib/validation'
 import { Models } from 'appwrite'
 import {useUserContext } from '@/context/AuthContext'
@@ -40,20 +39,16 @@ const PostForm = ( {post, action} : PostFormProps ) => {
     resolver: zodResolver(PostValidation),
     defaultValues: {
       caption: post ? post?.caption : "",
-      file: [],
       location: post ? post?.location : "",
       tags: post ? post.tags.join(',') : "",
     },
   });
-  //const id=user.user?.id;
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PostValidation>) {
     if(post && action === 'update'){
       const updatedPost= await updatePost({
         ...values,
         postId: post.$id,
-        imageId: post.imageId,
-        imageUrl: post.imageUrl,
       })
 
       if(!updatedPost){
@@ -96,22 +91,6 @@ const PostForm = ( {post, action} : PostFormProps ) => {
               <FormLabel className="shad-from_label">Caption</FormLabel>
               <FormControl>
               <Textarea className="shad-textarea custom-scrollbar"  {...field} />
-              </FormControl>
-              <FormMessage className="shad-form_message"/>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="file"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="shad-from_label">Add Photos</FormLabel>
-              <FormControl>
-                <FileUploader 
-                    fieldChange={field.onChange}
-                    mediaUrl={post?.imageUrl }
-                />
               </FormControl>
               <FormMessage className="shad-form_message"/>
             </FormItem>

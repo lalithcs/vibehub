@@ -11,11 +11,11 @@ const TopCreators = ({ creator }: TopCreatorsProps) => {
     <Link
       to={`/profile/${creator.$id}`}
       className="px-2 py-5 border-[#1F1F22] border-2 rounded-[20px] flex flex-col items-center gap-5 justify-center">
-      <img
-        className="h-14 w-14 rounded-full"
-        alt="profile"
-        src={creator.imageUrl || "/assets/icons/profile-placeholder.svg"}
-      />
+      <div className="h-14 w-14 rounded-full bg-primary-500 flex items-center justify-center">
+        <span className="text-white font-bold text-xl">
+          {creator.name?.charAt(0)?.toUpperCase() || 'U'}
+        </span>
+      </div>
       <p className="body-bold">{creator.name}</p>
       <Button
         onClick={(e) => {

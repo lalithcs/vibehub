@@ -55,30 +55,29 @@ const SigninForm = () => {
     
     }
   }
-  
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col">
-        <img src="/assets/images/logo t5.png" alt="Logo" className="w-24 h-24" />
+      <div className="w-full flex-center flex-col">
+        <img src="/assets/images/logo t5.png" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 mb-4" />
 
-        <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">Log in to your account</h2>
-        <p className="text-light-3 small-medium md:base-regular mt-2">Welcome back, please enter your details</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-2">Log in to your account</h2>
+        <p className="text-light-3 text-sm md:text-base text-center mb-8">Welcome back, please enter your details</p>
       
 
 
 
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full mt-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-white">Email</FormLabel>
                 <FormControl>
-                  <Input type="email" className="shad-input" {...field} />
+                  <Input type="email" className="shad-input" placeholder="Enter your email" {...field} />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="text-light-3 text-sm">
                   Please Enter a Valid Email Address
                 </FormDescription>
                 <FormMessage />
@@ -90,18 +89,18 @@ const SigninForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-white">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input type="password" className="shad-input" placeholder="Enter your password" {...field} />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="text-light-3 text-sm">
                   Enter your password
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="shad-button_primary">
+          <Button type="submit" className="shad-button_primary w-full mt-4">
             {isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader />
@@ -110,9 +109,11 @@ const SigninForm = () => {
             ): "Sign in"}
           </Button>
 
-          <p className="text-small-regular text-light-2 text-center mt-2">
-            Don't have an account?
-            <Link to="/sign-up" className="text-primary-500" text-small-semibold ml-1>Sign up</Link>
+          <p className="text-sm text-light-2 text-center mt-4">
+            Don't have an account?{" "}
+            <Link to="/sign-up" className="text-primary-500 font-semibold hover:underline">
+              Sign up
+            </Link>
           </p>
         </form>
       </div>
