@@ -5,7 +5,7 @@ const UserCard = () => {
 const {user}=useUserContext();
   return (
     <div>
-      <Link to={'/profile/${user.id'} className='flex gap-3 items-center'>
+      <Link to={`/profile/${user.id}`} className='flex gap-3 items-center'>
           <div className="h-12 w-12 rounded-full bg-primary-500 flex items-center justify-center">
             <span className="text-white font-bold text-lg">
               {user.name?.charAt(0)?.toUpperCase() || 'U'}

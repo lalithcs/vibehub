@@ -9,3 +9,4 @@ export {default as AllUsers } from './AllUsers';
 export {default as PostDetails } from './PostDetails';
 export {default as LikedPosts } from './LikedPosts';
 export {default as Disclaimer } from './Disclaimer';
+export {default as SavedPosts } from './SavedPosts';
