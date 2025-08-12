@@ -22,7 +22,7 @@ const PostDetails = () => {
           <div className="post_details-info">
             
               <div className="flex-between w-full">
-              <Link to={`/profile/$(post.creator.$id)`}  className="flex items-center gap-3">
+              <Link to={`/profile/${post?.creator.$id}`}  className="flex items-center gap-3">
                     <div className="rounded-full w-8 h-8 lg:w-12 lg:h-12 bg-primary-500 flex items-center justify-center">
                       <span className="text-white font-bold text-sm lg:text-lg">
                         {post?.creator?.name?.charAt(0)?.toUpperCase() || 'U'}
