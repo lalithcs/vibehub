@@ -4,7 +4,7 @@ import {
     useQueryClient,
     useInfiniteQuery,
 } from '@tanstack/react-query'
-import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getTopCreators, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost } from '../appwrite/api'
+import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getTopCreators, likePost, savePost, searchPosts, signInAccount, signOutAccount, updatePost, getUserById, getPostsByUser } from '../appwrite/api'
 import { INewPost, INewUser, IUpdatePost } from '@/types'
 import { QUERY_KEYS } from './queryKeys';
 import { fetchPlacementStatistics } from '../appwrite/api.ts';
@@ -192,6 +192,22 @@ export const useGetSavedPosts = (userId: string | undefined) => {
     enabled: !!userId,
   });
 };
+
+export const useGetUserById = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
+    queryFn: () => getUserById(userId || ''),
+    enabled: !!userId,
+  });
+}
+
+export const useGetUserPosts = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
+    queryFn: () => getPostsByUser(userId || ''),
+    enabled: !!userId,
+  });
+}
   interface PlacementStatistics {
     totalStudents: number;
     placedStudents: number;

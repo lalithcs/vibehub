@@ -129,6 +129,16 @@ const App = () => {
                   } 
                 />
                 <Route 
+                  path="/profile/:id/saved" 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
+                />
+                <Route 
                   path="/update-profile/:id" 
                   element={
                     isAuthenticated ? (
