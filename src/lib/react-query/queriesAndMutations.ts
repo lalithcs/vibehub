@@ -8,6 +8,7 @@ import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentU
 import { INewPost, INewUser, IUpdatePost } from '@/types'
 import { QUERY_KEYS } from './queryKeys';
 import { fetchPlacementStatistics } from '../appwrite/api.ts';
+import { getSavedPostsByUser } from '../appwrite/api';
 
 
 export const useCreateUserAccount = () => {
@@ -132,9 +133,9 @@ export const useUpdatePost = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (post: IUpdatePost) => updatePost(post),
-        onSuccess: (data) => {
+        onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_POST_BY_ID, data],
+                queryKey: [QUERY_KEYS.GET_POST_BY_ID, variables.postId],
             });
         },
     });
@@ -183,6 +184,14 @@ export const useGetTopCreators = () => {
       queryFn: getTopCreators,
     });
   };
+
+export const useGetSavedPosts = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_SAVED_POSTS, userId],
+    queryFn: () => getSavedPostsByUser(userId || ''),
+    enabled: !!userId,
+  });
+};
   interface PlacementStatistics {
     totalStudents: number;
     placedStudents: number;

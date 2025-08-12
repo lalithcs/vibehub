@@ -35,7 +35,7 @@ const PostCard = ({ post }: PostCardProps) => {
     <div className="post-card">
         <div className="flex-between">
             <div className="flex item-center gap-3">
-                <Link to={`/profile/$(post.creator.$id)`}>
+                <Link to={`/profile/${post.creator.$id}`}>
                     <div className="rounded-full w-12 lg:h-12 bg-primary-500 flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
                         {post.creator?.name?.charAt(0)?.toUpperCase() || 'U'}

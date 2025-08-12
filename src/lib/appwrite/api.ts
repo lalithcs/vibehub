@@ -265,6 +265,27 @@ export async function getPostById(postId?: string) {
     }
 }
 
+export async function getSavedPostsByUser(userId: string) {
+    try {
+        const savedDocs = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            [Query.equal('user', userId), Query.orderDesc('$createdAt')]
+        );
+
+        if (!savedDocs) throw Error;
+
+        // Each saved document is expected to have a related `post` document
+        // Map to an array of posts while preserving original structure as needed
+        const posts = (savedDocs.documents || []).map((doc: any) => doc.post).filter(Boolean);
+
+        return { saved: savedDocs.documents, posts } as { saved: any[]; posts: any[] };
+    } catch (error) {
+        console.log(error);
+        return { saved: [], posts: [] };
+    }
+}
+
 export async function updatePost(post: IUpdatePost) {
     try {
         //Convert tags to array

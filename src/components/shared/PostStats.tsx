@@ -12,7 +12,7 @@ type PostStatsProps = {
 const PostStats = ( {post, userId}: PostStatsProps) => {
     const likesList = post?.likes.map((user : Models.Document) => user.$id)
 
-    const [likes, setLikes]= useState(likesList);
+    const [likes, setLikes]= useState<string[]>(likesList ?? []);
     const [isSaved, setIsSaved]= useState(false);
 
 
@@ -30,7 +30,7 @@ const PostStats = ( {post, userId}: PostStatsProps) => {
     const handleLikePost = (e: React.MouseEvent)=> {
         e.stopPropagation();
 
-        let newLikes = [...likes];
+        let newLikes = [...(likes ?? [])];
         const hasLiked = newLikes.includes(userId);
 
         if(hasLiked){
@@ -62,7 +62,7 @@ const PostStats = ( {post, userId}: PostStatsProps) => {
     <div className=" flex justify-between items-center z-20">
       <div className="flex gap-2 mr-5">
         <img 
-        src={`${checkIsLiked(likes, userId) ? "/assets/icons/liked.svg" : "/assets/icons/like.svg"}`}
+        src={`${checkIsLiked(likes ?? [], userId) ? "/assets/icons/liked.svg" : "/assets/icons/like.svg"}`}
         alt="like"
         width={20}
         height={20}
