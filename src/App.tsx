@@ -4,7 +4,7 @@ import SignupForm from './_auth/forms/SignupForm';
 import RootLayout from './_root/RootLayout';
 
 import { Toaster } from "@/components/ui/toaster";
-import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Saved, UpdateProfile, Disclaimer } from './_root/pages';
+import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Saved, UpdateProfile, Disclaimer, SavedPosts } from './_root/pages';
 import './globals.css'
 import {Routes, Route, Navigate} from 'react-router-dom';
 import PlacementDashboard from './_root/pages/PlacementDashboard';
@@ -69,6 +69,16 @@ const App = () => {
                   } 
                 />
                 <Route 
+                  path="/saved-posts" 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <SavedPosts /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
+                />
+                <Route 
                   path="/all-users" 
                   element={
                     isAuthenticated ? (
@@ -110,6 +120,16 @@ const App = () => {
                 />
                 <Route 
                   path="/profile/:id/*" 
+                  element={
+                    isAuthenticated ? (
+                      hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />
+                    ) : (
+                      <Navigate to="/sign-in" replace />
+                    )
+                  } 
+                />
+                <Route 
+                  path="/profile/:id/saved" 
                   element={
                     isAuthenticated ? (
                       hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />

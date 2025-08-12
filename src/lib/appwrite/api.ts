@@ -402,3 +402,31 @@ export const fetchPlacementStatistics = async (): Promise<PlacementStatistics> =
     return staticData;
     };
 
+export async function getUserById(userId: string) {
+    try {
+        const user = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            userId
+        );
+        if (!user) throw Error;
+        return user;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getPostsByUser(userId: string) {
+    try {
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.collectionId,
+            [Query.equal('creator', userId), Query.orderDesc('$createdAt')]
+        );
+        if (!posts) throw Error;
+        return posts;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
