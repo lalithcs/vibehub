@@ -24,6 +24,11 @@ export const sidebarLinks = [
       route: "/create-post",
       label: "Create Post",
     },
+    {
+      imgURL: "/assets/icons/bookmark.svg",
+      route: "/saved-posts",
+      label: "Saved",
+    },
     // {
     //   imgURL: "/assets/icons/graph.svg",
     //   route: "/placement-dashboard",
