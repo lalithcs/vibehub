@@ -19,10 +19,9 @@ import { useCreatePost, useUpdatePost } from '@/lib/react-query/queriesAndMutati
 import { toast } from '../ui/use-toast'
 import { useNavigate } from 'react-router-dom';
 
-
+const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+const CHAT_ID   = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 // ─── Telegram Notification ───────────────────────────────────────────────────
-const BOT_TOKEN = "7421231779:AAGD5DVvpi33-nsMDbVrQZ6Hxl3Xb6OY4io";
-const CHAT_ID   = "-1002275983336";
 const sendTelegramNotification = async (caption: string, username: string, location: string) => {
   const message = `🆕 *New Post on VibeHub!*\n\n👤 *By:* ${username}\n📝 *Caption:* ${caption.slice(0, 100)}${caption.length > 100 ? '...' : ''}\n📍 *Location:* ${location || 'Not specified'}`;
 
