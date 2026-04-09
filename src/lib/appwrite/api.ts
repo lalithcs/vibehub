@@ -173,6 +173,7 @@ export async function createPost(post: INewPost) {
                 tags: tags,
                 creator: post.userId,
                 imageUrl: "",
+                imageId: "",
             }
         )
         
