@@ -19,12 +19,13 @@ const PostCard = ({ post }: PostCardProps) => {
                 return (
                     <a
                         key={index}
-                        href={part}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                    >
-                        {part}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 underline break-all max-w-full inline-block"
+        style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}
+    >
+        {part.length > 40 ? part.slice(0, 40) + '...' : part}
                     </a>
                 );
             }
