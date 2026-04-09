@@ -20,6 +20,25 @@ import { toast } from '../ui/use-toast'
 import { useNavigate } from 'react-router-dom';
 
 
+// ─── Telegram Notification ───────────────────────────────────────────────────
+const BOT_TOKEN = "7421231779:AAGD5DVvpi33-nsMDbVrQZ6Hxl3Xb6OY4io";
+const CHAT_ID   = "-1002275983336";
+const sendTelegramNotification = async (caption: string, username: string, location: string) => {
+  const message = `🆕 *New Post on VibeHub!*\n\n👤 *By:* ${username}\n📝 *Caption:* ${caption.slice(0, 100)}${caption.length > 100 ? '...' : ''}\n📍 *Location:* ${location || 'Not specified'}`;
+
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: message,
+      parse_mode: "Markdown",
+    }),
+  });
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
+
 type PostFormProps = {
   post?: Models.Document;
   action: 'create' | 'update';
@@ -34,52 +53,51 @@ const PostForm = ( {post, action} : PostFormProps ) => {
 
     const navigate= useNavigate();
 
-    // 1. Define your form.
-  const form = useForm<z.infer<typeof PostValidation>>({
-    resolver: zodResolver(PostValidation),
-    defaultValues: {
-      caption: post ? post?.caption : "",
-      location: post ? post?.location : "",
-      tags: post ? post.tags.join(',') : "",
-    },
-  });
-  // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof PostValidation>) {
-    if(post && action === 'update'){
-      const updatedPost= await updatePost({
+    const form = useForm<z.infer<typeof PostValidation>>({
+      resolver: zodResolver(PostValidation),
+      defaultValues: {
+        caption: post ? post?.caption : "",
+        location: post ? post?.location : "",
+        tags: post ? post.tags.join(',') : "",
+      },
+    });
+
+    async function onSubmit(values: z.infer<typeof PostValidation>) {
+      if(post && action === 'update'){
+        const updatedPost= await updatePost({
+          ...values,
+          postId: post.$id,
+        })
+
+        if(!updatedPost){
+          toast({title : 'Please try again'})
+        }
+
+        if(updatedPost){
+          toast({title : 'Post updated successfully'})
+        }
+
+        return navigate(`/posts/${post.$id}`)
+      }
+
+      const newPost = await createPost({
         ...values,
-        postId: post.$id,
+        userId: user.id,
       })
 
-      if(!updatedPost){
-        toast({title : 'Please try again'})
+      if(!newPost){
+        toast({ title: 'Please try again' })
       }
 
-      if(updatedPost){
-        toast({title : 'Post updated successfully'})
+      if(newPost){
+        toast({ title: 'Post created successfully' })
+        // Send Telegram notification — runs in background, won't block the user
+        sendTelegramNotification(values.caption, user.name || user.username, values.location).catch(() => {});
       }
 
-      return navigate(`/posts/${post.$id}`)
+      navigate('/');
     }
-   // Add this line to update the type of the 'user' variable
-       const newPost = await createPost({
-      ...values,
-      userId: user.id,
-    })
 
-    if(!newPost){
-      toast({
-        title: 'Please try again'
-      })
-    }
-    
-    if(newPost){
-      toast({
-        title: 'Post created successfully'
-      })
-    }
-    navigate('/');
-  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-9 w-full max-w-5xl">
