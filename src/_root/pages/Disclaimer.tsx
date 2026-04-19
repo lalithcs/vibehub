@@ -12,9 +12,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 import { toast } from "@/components/ui/use-toast"
+import { useUserContext } from "@/context/AuthContext"
 
 const Disclaimer = () => {
   const navigate = useNavigate()
+  const { user } = useUserContext()
   const [agreed, setAgreed] = useState(false)
   
   const form = useForm({
@@ -35,13 +37,12 @@ const Disclaimer = () => {
       return
     }
     
-    // Store agreement in localStorage
-    localStorage.setItem("disclaimerAgreed", "true")
+    // Store agreement in localStorage keyed by user ID so each user must accept independently
+    localStorage.setItem(`disclaimerAgreed_${user.id}`, "true")
     navigate("/")
   }
 
   const handleFeedbackSubmit = (values: { name: string; email: string; feedback: string }) => {
-    // Log feedback data (you can send this to your backend)
     console.log("Feedback submitted:", values)
     
     toast({
