@@ -11,9 +11,12 @@ import PlacementDashboard from './_root/pages/PlacementDashboard';
 import { useUserContext } from './context/AuthContext';
 
 const App = () => {
-  // Check if user has already agreed to disclaimer
-  const hasAgreedToDisclaimer = localStorage.getItem("disclaimerAgreed") === "true";
-  const { isAuthenticated, isPending } = useUserContext();
+  const { isAuthenticated, isPending, user } = useUserContext();
+
+  // Check disclaimer per user ID so each user must accept independently
+  const hasAgreedToDisclaimer = user?.id
+    ? localStorage.getItem(`disclaimerAgreed_${user.id}`) === "true"
+    : false;
 
   // Show loading while checking authentication
   if (isPending) {
