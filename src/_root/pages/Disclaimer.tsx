@@ -64,7 +64,7 @@ const Disclaimer = () => {
             width={200}
             height={50}
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome to VibeHub</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome to CareerQuest</h1>
           <p className="text-light-3">Please read and accept our terms before continuing</p>
         </div>
 
@@ -75,7 +75,7 @@ const Disclaimer = () => {
           <div className="space-y-4 text-light-2">
             <div>
               <h3 className="font-semibold text-white mb-2">1. Acceptance of Terms</h3>
-              <p>By accessing and using VibeHub, you accept and agree to be bound by the terms and provision of this agreement.</p>
+              <p>By accessing and using CareerQuest, you accept and agree to be bound by the terms and provision of this agreement.</p>
             </div>
             
             <div>
@@ -100,12 +100,12 @@ const Disclaimer = () => {
             
             <div>
               <h3 className="font-semibold text-white mb-2">6. Intellectual Property</h3>
-              <p>All intellectual property rights in VibeHub remain with us or our licensors. Users retain rights to their own content.</p>
+              <p>All intellectual property rights in CareerQuest remain with us or our licensors. Users retain rights to their own content.</p>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-2">7. Limitation of Liability</h3>
-              <p>VibeHub is provided "as is" without warranties. We are not liable for any damages arising from the use of our platform or interactions with third parties.</p>
+              <p>CareerQuest is provided "as is" without warranties. We are not liable for any damages arising from the use of our platform or interactions with third parties.</p>
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ const Disclaimer = () => {
             onClick={handleContinue}
             disabled={!agreed}
           >
-            Continue to VibeHub
+            Continue to CareerQuest
           </Button>
         </div>
 
