@@ -6,25 +6,20 @@ import RootLayout from './_root/RootLayout';
 import { Toaster } from "@/components/ui/toaster";
 import { AllUsers, CreatePost, EditPost, Explore, Home, PostDetails, Profile, Saved, UpdateProfile, Disclaimer, SavedPosts } from './_root/pages';
 import './globals.css'
-import {Routes, Route, Navigate} from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import PlacementDashboard from './_root/pages/PlacementDashboard';
 import { useUserContext } from './context/AuthContext';
 
-// Helper: check disclaimer only when we have a real user ID
-const checkDisclaimer = (userId: string) => {
-  if (!userId) return false;
-  return localStorage.getItem(`disclaimerAgreed_${userId}`) === "true";
-};
-
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
-  const { isAuthenticated, isPending, user } = useUserContext();
-
-  if (isPending) return null; // wait silently — App-level loader handles this
+  const { isAuthenticated, user } = useUserContext();
 
   if (!isAuthenticated) return <Navigate to="/sign-in" replace />;
 
-  // User is authenticated — now check disclaimer with confirmed user.id
-  if (!checkDisclaimer(user.id)) return <Navigate to="/disclaimer" replace />;
+  const hasAgreed = user?.id
+    ? localStorage.getItem(`disclaimerAgreed_${user.id}`) === "true"
+    : false;
+
+  if (!hasAgreed) return <Navigate to="/disclaimer" replace />;
 
   return element;
 };
