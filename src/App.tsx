@@ -10,15 +10,28 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import PlacementDashboard from './_root/pages/PlacementDashboard';
 import { useUserContext } from './context/AuthContext';
 
-const App = () => {
+// Helper: check disclaimer only when we have a real user ID
+const checkDisclaimer = (userId: string) => {
+  if (!userId) return false;
+  return localStorage.getItem(`disclaimerAgreed_${userId}`) === "true";
+};
+
+const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
   const { isAuthenticated, isPending, user } = useUserContext();
 
-  // Check disclaimer per user ID so each user must accept independently
-  const hasAgreedToDisclaimer = user?.id
-    ? localStorage.getItem(`disclaimerAgreed_${user.id}`) === "true"
-    : false;
+  if (isPending) return null; // wait silently — App-level loader handles this
 
-  // Show loading while checking authentication
+  if (!isAuthenticated) return <Navigate to="/sign-in" replace />;
+
+  // User is authenticated — now check disclaimer with confirmed user.id
+  if (!checkDisclaimer(user.id)) return <Navigate to="/disclaimer" replace />;
+
+  return element;
+};
+
+const App = () => {
+  const { isPending } = useUserContext();
+
   if (isPending) {
     return (
       <div className="flex h-screen items-center justify-center bg-dark-1">
@@ -29,144 +42,36 @@ const App = () => {
 
   return (
     <main className="flex h-screen">
-        <Routes>
-            {/* Disclaimer route - first page for new users */}
-            <Route path="/disclaimer" element={<Disclaimer />} />
-            
-            {/* public routes */}
-            <Route element={<AuthLayout />} >
-                <Route path="/sign-in" element={<SigninForm />} />
-                <Route path="/sign-up" element={<SignupForm />} />
-            </Route>
+      <Routes>
+        {/* Disclaimer route */}
+        <Route path="/disclaimer" element={<Disclaimer />} />
 
-            {/* private routes */}
-            <Route element={<RootLayout />} >
-                <Route 
-                  path="/" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <Home /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/explore" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <Explore /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/saved" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <Saved /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/saved-posts" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <SavedPosts /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/all-users" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <AllUsers /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/create-post" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <CreatePost /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/update-post/:id" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <EditPost /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/posts/:id" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <PostDetails /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/profile/:id/*" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/profile/:id/saved" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <Profile /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/update-profile/:id" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <UpdateProfile /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-                <Route 
-                  path="/placement-dashboard" 
-                  element={
-                    isAuthenticated ? (
-                      hasAgreedToDisclaimer ? <PlacementDashboard /> : <Navigate to="/disclaimer" replace />
-                    ) : (
-                      <Navigate to="/sign-in" replace />
-                    )
-                  } 
-                />
-            </Route>
-        </Routes>
+        {/* Public routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/sign-in" element={<SigninForm />} />
+          <Route path="/sign-up" element={<SignupForm />} />
+        </Route>
 
-        <Toaster />
+        {/* Private routes */}
+        <Route element={<RootLayout />}>
+          <Route path="/"                    element={<ProtectedRoute element={<Home />} />} />
+          <Route path="/explore"             element={<ProtectedRoute element={<Explore />} />} />
+          <Route path="/saved"               element={<ProtectedRoute element={<Saved />} />} />
+          <Route path="/saved-posts"         element={<ProtectedRoute element={<SavedPosts />} />} />
+          <Route path="/all-users"           element={<ProtectedRoute element={<AllUsers />} />} />
+          <Route path="/create-post"         element={<ProtectedRoute element={<CreatePost />} />} />
+          <Route path="/update-post/:id"     element={<ProtectedRoute element={<EditPost />} />} />
+          <Route path="/posts/:id"           element={<ProtectedRoute element={<PostDetails />} />} />
+          <Route path="/profile/:id/*"       element={<ProtectedRoute element={<Profile />} />} />
+          <Route path="/profile/:id/saved"   element={<ProtectedRoute element={<Profile />} />} />
+          <Route path="/update-profile/:id"  element={<ProtectedRoute element={<UpdateProfile />} />} />
+          <Route path="/placement-dashboard" element={<ProtectedRoute element={<PlacementDashboard />} />} />
+        </Route>
+      </Routes>
+
+      <Toaster />
     </main>
-  )
-}
+  );
+};
 
-export default App
+export default App;
