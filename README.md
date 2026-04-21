@@ -1,10 +1,10 @@
-# Snapgram / VibeHub — Complete Project Documentation
+# CareerQuest — Complete Project Documentation
 
 Last updated: March 13, 2026
 
 ## 1) Project Summary
 
-Snapgram (branded as **VibeHub** in parts of the UI and PWA manifest) is a React + TypeScript social platform focused on:
+CareerQuest is a React + TypeScript social platform focused on:
 - Account sign-up/sign-in via Appwrite
 - Public feed and explore/search flows
 - User profiles and saved posts

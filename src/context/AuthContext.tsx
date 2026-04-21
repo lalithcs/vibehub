@@ -55,12 +55,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 return true;
             }
 
-            // If no current account, logout user
             logoutUser();
             return false;
         } catch (error) {
             console.log("Auth check failed:", error);
-            // Session expired or invalid, logout user
             logoutUser();
             return false;
         } finally{
@@ -74,7 +72,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             if (isAuthenticated) {
                 checkAuthUser();
             }
-        }, 5 * 60 * 1000); // Check every 5 minutes
+        }, 5 * 60 * 1000);
 
         return () => clearInterval(interval);
     }, [isAuthenticated]);
@@ -87,6 +85,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             cookieFallback === null ||
             cookieFallback === undefined
         ) {
+            setisPending(false); // ← THE FIX: was stuck as true forever when no cookie
             navigate('/sign-in');
         } else {
             checkAuthUser();
