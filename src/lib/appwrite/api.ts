@@ -160,30 +160,37 @@ export async function signOutAccount() {
 
 export async function createPost(post: INewPost) {
     try {
-        //Convert tags to array
-        const tags = post.tags?.replace(/ /g,'').split(',') || [];
-        //Save post to database
+        // Convert tags into array, filter out empty strings
+        const tags = post.tags
+            ? post.tags.replace(/ /g, '').split(',').filter(Boolean)
+            : [];
+
+        // Build document — imageUrl / imageId are optional in Appwrite,
+        // so we omit them entirely instead of passing an empty string
+        // which would fail Appwrite URL validation.
+        const docData: Record<string, any> = {
+            caption: post.caption,
+            tags:    tags,
+            creator: post.userId,
+        };
+
+        // Only include location if the user actually typed one
+        if (post.location && post.location.trim() !== "") {
+            docData.location = post.location.trim();
+        }
+
         const newPost = await databases.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.collectionId,
             ID.unique(),
-            {
-                caption: post.caption,
-                location: post.location,
-                tags: tags,
-                creator: post.userId,
-                imageUrl: "",
-                imageId: "",
-            }
-        )
-        
-        if(!newPost){
-            throw Error;
-        }
+            docData
+        );
+
+        if (!newPost) throw Error;
         return newPost;
     } catch (error) {
-        console.log(error);
-        return error;   
+        console.log("createPost error:", error);
+        return null;
     }
 }
 
@@ -290,27 +297,31 @@ export async function getSavedPostsByUser(userId: string) {
 
 export async function updatePost(post: IUpdatePost) {
     try {
-        //Convert tags to array
-        const tags = post.tags?.replace(/ /g,'').split(',') || [];
-        //Save post to database
+        const tags = post.tags
+            ? post.tags.replace(/ /g, '').split(',').filter(Boolean)
+            : [];
+
+        const docData: Record<string, any> = {
+            caption: post.caption,
+            tags:    tags,
+        };
+
+        if (post.location && post.location.trim() !== "") {
+            docData.location = post.location.trim();
+        }
+
         const updatedPost = await databases.updateDocument(
             appwriteConfig.databaseId,
             appwriteConfig.collectionId,
             post.postId,
-            {
-                caption: post.caption,
-                location: post.location,
-                tags: tags,
-            }
-        )
+            docData
+        );
 
-        if(!updatedPost){
-            throw Error;
-        }
+        if (!updatedPost) throw Error;
         return updatedPost;
     } catch (error) {
-        console.log(error);
-        return error;   
+        console.log("updatePost error:", error);
+        return null;
     }
 }
 
@@ -431,4 +442,3 @@ export async function getPostsByUser(userId: string) {
         console.log(error);
     }
 }
-
