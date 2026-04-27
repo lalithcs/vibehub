@@ -3,87 +3,112 @@ import { formatDate } from '@/lib/utils';
 import { Models } from 'appwrite';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
+
 type PostCardProps = {
-    post:Models.Document;
-    
+    post: Models.Document;
 };
 
 const PostCard = ({ post }: PostCardProps) => {
     const { user } = useUserContext();
-    if(!post.creator) return;
+    if (!post.creator) return null;
+
     const parseCaption = (caption: string) => {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
-
         return caption.split(urlRegex).map((part, index) => {
             if (part.match(urlRegex)) {
                 return (
                     <a
                         key={index}
-        href={part}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 underline break-all max-w-full inline-block"
-        style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}
-    >
-        {part.length > 40 ? part.slice(0, 40) + '...' : part}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline break-all"
+                        style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}
+                    >
+                        {part.length > 40 ? part.slice(0, 40) + '...' : part}
                     </a>
                 );
             }
-            return part; // Return the non-URL part as plain text
+            return part;
         });
     };
-  return (
-    <div className="post-card">
-        <div className="flex-between">
-            <div className="flex item-center gap-3">
-                <Link to={`/profile/${post.creator.$id}`}>
-                    <div className="rounded-full w-12 lg:h-12 bg-primary-500 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">
-                        {post.creator?.name?.charAt(0)?.toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                </Link>
 
-                <div className='flex flex-col'>
-                    <p>
-                        {post.creator.name}
-                    </p>
-                    <div className="flex-center gap-2 text-loght-3">
-                        <p className="subtle-semibold">
-                            {formatDate(post.$createdAt)}
+    return (
+        <div className="post-card">
+
+            {/* ── Header: avatar + name + date ─────────────────── */}
+            <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <Link to={`/profile/${post.creator.$id}`} className="shrink-0">
+                        {/* w AND h both set — no more collapsed circle on mobile */}
+                        <div className="rounded-full w-9 h-9 sm:w-11 sm:h-11 bg-primary-500 flex items-center justify-center">
+                            <span className="text-white font-bold text-sm sm:text-base">
+                                {post.creator?.name?.charAt(0)?.toUpperCase() || 'U'}
+                            </span>
+                        </div>
+                    </Link>
+
+                    <div className="flex flex-col min-w-0">
+                        <p className="text-light-1 font-semibold text-sm sm:text-base truncate">
+                            {post.creator.name}
                         </p>
-                        <p className="subtle-semibold lg:small-regular">
-                            {post.location}
-                        </p>
+                        <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                            <p className="text-light-3 text-xs sm:text-sm">
+                                {formatDate(post.$createdAt)}
+                            </p>
+                            {post.location && (
+                                <>
+                                    <span className="text-light-4 text-xs hidden xs:inline">·</span>
+                                    <p className="text-light-3 text-xs sm:text-sm truncate max-w-[120px] sm:max-w-none">
+                                        {post.location}
+                                    </p>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
+
+                {/* Edit icon — only visible to post creator */}
+                <Link
+                    to={`/update-post/${post.$id}`}
+                    className={`shrink-0 ${user.id !== post.creator.$id ? 'hidden' : ''}`}
+                >
+                    <img
+                        src="assets/icons/edit.svg"
+                        alt="edit"
+                        width={18}
+                        height={18}
+                        className="opacity-70 hover:opacity-100 transition-opacity"
+                    />
+                </Link>
             </div>
-            <Link to={`/update-post/${post.$id}`}
-            className={`${user.id !== post.creator.$id && "hidden"}`}
-            >
-                <img 
-                src="assets/icons/edit.svg"
-                alt="edit"
-                width={20}
-                height={20}
-                />
-            </Link>
+
+            {/* ── Caption ──────────────────────────────────────── */}
+            <div className="py-3 sm:py-5">
+                <p
+                    className="text-light-1 text-sm sm:text-base leading-relaxed"
+                    style={{ whiteSpace: 'pre-wrap' }}
+                >
+                    {parseCaption(post.caption)}
+                </p>
+
+                {post.tags?.length > 0 && (
+                    <ul className="flex flex-wrap gap-1 mt-2">
+                        {post.tags.map((tag: string) =>
+                            tag ? (
+                                <li key={tag} className="text-light-3 text-xs sm:text-sm">
+                                    #{tag}
+                                </li>
+                            ) : null
+                        )}
+                    </ul>
+                )}
+            </div>
+
+            {/* ── Stats: likes + save ──────────────────────────── */}
+            <PostStats post={post} userId={user.id} />
         </div>
-        
-            <div className="small-medium lg:base-medium py-5">
-                <p style={{ whiteSpace: 'pre-wrap' }}>{parseCaption(post.caption)}</p>
-                <ul className="flex gap-1 mt-2">
-                    {post.tags.map((tag: string) => (
-                        <li key={tag} className="text-light-3">
-                            #{tag}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+    );
+};
 
-        <PostStats post={post} userId={user.id} />
-    </div>
-  )
-}
-
-export default PostCard
+export default PostCard;
