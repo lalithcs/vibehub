@@ -1,6 +1,5 @@
 import AuthLayout from './_auth/AuthLayout';
 import SigninForm from './_auth/forms/SigninForm';
-import SignupForm from './_auth/forms/SignupForm';
 import RootLayout from './_root/RootLayout';
 
 import { Toaster } from "@/components/ui/toaster";
@@ -40,9 +39,11 @@ const App = () => {
       <Routes>
         <Route path="/disclaimer" element={<Disclaimer />} />
 
+        {/* Auth routes — sign-up is removed and redirected */}
         <Route element={<AuthLayout />}>
           <Route path="/sign-in" element={<SigninForm />} />
-          <Route path="/sign-up" element={<SignupForm />} />
+          {/* Anyone who tries /sign-up gets sent to /sign-in */}
+          <Route path="/sign-up" element={<Navigate to="/sign-in" replace />} />
         </Route>
 
         <Route element={<RootLayout />}>
@@ -59,6 +60,9 @@ const App = () => {
           <Route path="/update-profile/:id"  element={<ProtectedRoute element={<UpdateProfile />} />} />
           <Route path="/placement-dashboard" element={<ProtectedRoute element={<PlacementDashboard />} />} />
         </Route>
+
+        {/* Catch-all — anything unknown goes to sign-in */}
+        <Route path="*" element={<Navigate to="/sign-in" replace />} />
       </Routes>
 
       <Toaster />
